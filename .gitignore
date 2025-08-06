@@ -1,0 +1,93 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+*.log
+*.pid
+.mock_server.pid
+deployment_info.json
+/tmp/
+/outputs/
+/models/
+mock_server.py
+
+# Docker
+.dockerignore
+
+# Kubernetes
+*.kubeconfig
+
+# Secrets
+.env.local
+.env.production
+secrets.yaml
+
+# Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Model files (too large for git)
+*.bin
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+
+# Output files
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.avi
+*.mov

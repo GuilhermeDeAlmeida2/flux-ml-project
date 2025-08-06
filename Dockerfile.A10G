@@ -1,0 +1,44 @@
+FROM nvidia/cuda:12.1.0-base-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instalar dependências do sistema
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 \
+    python3-pip \
+    git \
+    curl \
+    ffmpeg \
+    libsm6 \
+    libxext6 \
+    redis-server \
+    && rm -rf /var/lib/apt/lists/*
+
+# Criar diretório de trabalho
+WORKDIR /app
+
+# Copiar arquivos do projeto
+COPY src/requirements.txt .
+COPY src/app.py .
+COPY src/utils.py .
+
+# Instalar dependências Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Instalar PyTorch e CUDA compatíveis para A10G (CUDA 12.1)
+# Usar versão específica do PyTorch para garantir compatibilidade
+RUN pip install --no-cache-dir torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
+
+# Configurar variáveis de ambiente para otimização
+ENV FLASK_APP=app.py
+ENV MODEL_CACHE_DIR=/app/models
+ENV OUTPUT_DIR=/app/outputs
+ENV ENABLE_MODEL_OFFLOAD=true
+ENV REDIS_URL=redis://localhost:6379/0
+
+# Expor porta da aplicação Flask
+EXPOSE 5000
+
+# Comando para iniciar a aplicação
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--timeout", "120", "app:app"]
+
