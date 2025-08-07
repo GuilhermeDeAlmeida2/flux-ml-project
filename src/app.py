@@ -82,7 +82,7 @@ video_generator = VideoGenerator(CONFIG)
 os.makedirs(CONFIG['MODEL_CACHE_DIR'], exist_ok=True)
 os.makedirs(CONFIG['OUTPUT_DIR'], exist_ok=True)
 
-@app.before_first_request
+@app.before_request
 def initialize_models():
     """Inicializa os modelos na primeira requisição"""
     try:
