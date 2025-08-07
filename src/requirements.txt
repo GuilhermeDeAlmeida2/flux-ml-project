@@ -1,7 +1,7 @@
 flask
 flask-cors
 flask-jwt-extended
-torch
+# torch
 torchvision
 transformers
 diffusers
@@ -9,13 +9,14 @@ accelerate
 safetensors
 huggingface-hub
 pillow
-numpy
-requests
+# numpy<2.0
+peft<=0.6.2
+# requests
 python-multipart
 pydantic
 einops
 sentencepiece
-protobuf
+# protobuf
 invisible-watermark
 opencv-python
 psutil
