@@ -86,9 +86,14 @@ os.makedirs(CONFIG['OUTPUT_DIR'], exist_ok=True)
 def initialize_models():
     """Inicializa os modelos na primeira requisição"""
     try:
-        logger.info("Inicializando modelos FLUX...")
-        model_manager.load_base_model()
-        logger.info("Modelos inicializados com sucesso")
+        # Evita tentar carregar o modelo em toda requisição e durante /health
+        if not model_manager.is_loaded():
+            # Não inicializa durante o health check para evitar timeouts no primeiro acesso
+            if request.path == '/health':
+                return
+            logger.info("Inicializando modelos FLUX...")
+            model_manager.load_base_model()
+            logger.info("Modelos inicializados com sucesso")
     except Exception as e:
         logger.error(f"Erro ao inicializar modelos: {str(e)}")
 
@@ -392,6 +397,10 @@ def generate_image_task(self, task_id, prompt, width, height, num_inference_step
         
         start_time = time.time()
         
+        # Garantir que o modelo esteja carregado ao executar dentro do worker
+        if not model_manager.is_loaded():
+            model_manager.load_base_model()
+        
         # Carregar LoRA se necessário
         if lora_path:
             lora_manager.load_lora(lora_path)
@@ -442,6 +451,14 @@ def generate_video_task(self, task_id, prompt, duration, width, height, fps, see
         cache_manager.update_task_status(task_id, 'processing', user_id=user_id)
         
         start_time = time.time()
+        
+        # Garantir que o modelo esteja carregado ao executar dentro do worker (se vier a usar o modelo)
+        if not model_manager.is_loaded():
+            try:
+                model_manager.load_base_model()
+            except Exception:
+                # VideoGenerator atual não depende do modelo; continuar mesmo se falhar
+                logger.warning("Falha ao carregar modelo no worker de vídeo. Prosseguindo com gerador de frames.")
         
         # Carregar LoRA se necessário
         if lora_path:

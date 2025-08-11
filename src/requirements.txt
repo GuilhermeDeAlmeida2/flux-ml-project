@@ -21,3 +21,6 @@ invisible-watermark
 opencv-python
 psutil
 pyngrok
+redis
+celery
+gunicorn
